@@ -7,7 +7,9 @@ import entity.Project;
 import entity.Task;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MainModule {
@@ -15,58 +17,51 @@ public class MainModule {
     private static final IProjectRepository repository = new ProjectRepositoryImpl();
 
     public static void main(String[] args) {
+        Map<Integer, Runnable> actions = new HashMap<>();
+
+        actions.put(1, MainModule::addEmployee);
+        actions.put(2, MainModule::addProject);
+        actions.put(3, MainModule::addTask);
+        actions.put(4, MainModule::assignProjectToEmployee);
+        actions.put(5, MainModule::assignTaskToEmployee);
+        actions.put(6, MainModule::deleteEmployee);
+        actions.put(7, MainModule::deleteProject);
+        actions.put(8, MainModule::listAllTasks);
+
         while (true) {
-            System.out.println("\n==============================");
-            System.out.println("     Project Management Menu   ");
-            System.out.println("==============================");
-            System.out.println("1. Add Employee");
-            System.out.println("2. Add Project");
-            System.out.println("3. Add Task");
-            System.out.println("4. Assign Project to Employee");
-            System.out.println("5. Assign Task to Employee");
-            System.out.println("6. Delete Employee");
-            System.out.println("7. Delete Project");
-            System.out.println("8. List All Tasks in a Project");
-            System.out.println("0. Exit");
-            System.out.print("Please enter your choice: ");
+            displayMenu();
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
-            System.out.println(); // Add a newline for better readability
+            if (choice == 0) {
+                System.out.println("Exiting the application. Goodbye!");
+                return;
+            }
 
-            switch (choice) {
-                case 1:
-                    addEmployee();
-                    break;
-                case 2:
-                    addProject();
-                    break;
-                case 3:
-                    addTask();
-                    break;
-                case 4:
-                    assignProjectToEmployee();
-                    break;
-                case 5:
-                    assignTaskToEmployee();
-                    break;
-                case 6:
-                    deleteEmployee();
-                    break;
-                case 7:
-                    deleteProject();
-                    break;
-                case 8:
-                    listAllTasks();
-                    break;
-                case 0:
-                    System.out.println("Exiting the application. Goodbye!");
-                    return;
-                default:
-                    System.out.println("Invalid choice! Please try again.");
+            Runnable action = actions.get(choice);
+            if (action != null) {
+                action.run();
+            } else {
+                System.out.println("Invalid choice! Please try again.");
             }
         }
+    }
+
+    private static void displayMenu() {
+        System.out.println("\n=============================");
+        System.out.println("       Project Management     ");
+        System.out.println("=============================");
+        System.out.println("1. Add Employee");
+        System.out.println("2. Add Project");
+        System.out.println("3. Add Task");
+        System.out.println("4. Assign Project to Employee");
+        System.out.println("5. Assign Task to Employee");
+        System.out.println("6. Delete Employee");
+        System.out.println("7. Delete Project");
+        System.out.println("8. List All Tasks in a Project");
+        System.out.println("0. Exit");
+        System.out.print("Please select an option: ");
     }
 
     private static void addEmployee() {
