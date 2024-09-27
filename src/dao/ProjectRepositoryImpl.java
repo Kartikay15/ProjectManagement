@@ -3,6 +3,8 @@ package dao;
 import entity.Employee;
 import entity.Project;
 import entity.Task;
+import exception.EmployeeNotFoundException;
+import exception.ProjectNotFoundException;
 import util.DBConnUtil;
 
 import java.sql.*;
@@ -10,10 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectRepositoryImpl implements IProjectRepository {
+
     @Override
     public boolean createEmployee(Employee emp) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Employee (name, designation, gender, salary, project_id) VALUES (?, ?, ?, ?, ?)";
+            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, emp.getName());
             pstmt.setString(2, emp.getDesignation());
@@ -31,6 +35,7 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     public boolean createProject(Project pj) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Project (projectName, description, startDate, status) VALUES (?, ?, ?, ?)";
+            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, pj.getProjectName());
             pstmt.setString(2, pj.getDescription());
@@ -47,6 +52,7 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     public boolean createTask(Task task) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Task (task_name, project_id, employee_id, status) VALUES (?, ?, ?, ?)";
+            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, task.getTaskName());
             pstmt.setInt(2, task.getProjectId());
@@ -60,9 +66,17 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     }
 
     @Override
-    public boolean assignProjectToEmployee(int projectId, int employeeId) {
+    public boolean assignProjectToEmployee(int projectId, int employeeId) throws EmployeeNotFoundException, ProjectNotFoundException {
+        if (!checkProjectExists(projectId)) {
+            throw new ProjectNotFoundException("Project with ID " + projectId + " not found.");
+        }
+        if (!checkEmployeeExists(employeeId)) {
+            throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
+        }
+
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "UPDATE Employee SET project_id = ? WHERE id = ?";
+            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, projectId);
             pstmt.setInt(2, employeeId);
@@ -74,7 +88,14 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     }
 
     @Override
-    public boolean assignTaskToEmployee(int taskId, int projectId, int employeeId) {
+    public boolean assignTaskToEmployee(int taskId, int projectId, int employeeId) throws EmployeeNotFoundException, ProjectNotFoundException {
+        if (!checkProjectExists(projectId)) {
+            throw new ProjectNotFoundException("Project with ID " + projectId + " not found.");
+        }
+        if (!checkEmployeeExists(employeeId)) {
+            throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
+        }
+
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "UPDATE Task SET employee_id = ? WHERE task_id = ? AND project_id = ?";
             assert conn != null;
@@ -90,7 +111,11 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     }
 
     @Override
-    public boolean deleteEmployee(int userId) {
+    public boolean deleteEmployee(int userId) throws EmployeeNotFoundException {
+        if (!checkEmployeeExists(userId)) {
+            throw new EmployeeNotFoundException("Employee with ID " + userId + " not found.");
+        }
+
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "DELETE FROM Employee WHERE id = ?";
             assert conn != null;
@@ -104,7 +129,11 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     }
 
     @Override
-    public boolean deleteProject(int projectId) {
+    public boolean deleteProject(int projectId) throws ProjectNotFoundException {
+        if (!checkProjectExists(projectId)) {
+            throw new ProjectNotFoundException("Project with ID " + projectId + " not found.");
+        }
+
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "DELETE FROM Project WHERE id = ?";
             assert conn != null;
@@ -140,5 +169,36 @@ public class ProjectRepositoryImpl implements IProjectRepository {
             e.printStackTrace();
         }
         return tasks;
+    }
+
+    // Helper methods to check existence of employee and project
+    private boolean checkEmployeeExists(int employeeId) {
+        try (Connection conn = DBConnUtil.getConnection()) {
+            String query = "SELECT COUNT(*) FROM Employee WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, employeeId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean checkProjectExists(int projectId) {
+        try (Connection conn = DBConnUtil.getConnection()) {
+            String query = "SELECT COUNT(*) FROM Project WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, projectId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

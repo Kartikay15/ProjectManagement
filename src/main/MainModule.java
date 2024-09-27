@@ -5,6 +5,8 @@ import dao.ProjectRepositoryImpl;
 import entity.Employee;
 import entity.Project;
 import entity.Task;
+import exception.EmployeeNotFoundException;
+import exception.ProjectNotFoundException;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -122,8 +124,12 @@ public class MainModule {
         int projectId = scanner.nextInt();
         System.out.print("Enter employee ID: ");
         int employeeId = scanner.nextInt();
-        boolean success = repository.assignProjectToEmployee(projectId, employeeId);
-        System.out.println(success ? "✅ Project assigned successfully." : "❌ Failed to assign project.");
+        try {
+            boolean success = repository.assignProjectToEmployee(projectId, employeeId);
+            System.out.println(success ? "✅ Project assigned successfully." : "❌ Failed to assign project.");
+        } catch (EmployeeNotFoundException | ProjectNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
     }
 
     private static void assignTaskToEmployee() {
@@ -134,24 +140,36 @@ public class MainModule {
         int projectId = scanner.nextInt();
         System.out.print("Enter employee ID: ");
         int employeeId = scanner.nextInt();
-        boolean success = repository.assignTaskToEmployee(taskId, projectId, employeeId);
-        System.out.println(success ? "✅ Task assigned successfully." : "❌ Failed to assign task.");
+        try {
+            boolean success = repository.assignTaskToEmployee(taskId, projectId, employeeId);
+            System.out.println(success ? "✅ Task assigned successfully." : "❌ Failed to assign task.");
+        } catch (EmployeeNotFoundException | ProjectNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
     }
 
     private static void deleteEmployee() {
         System.out.println("----- Delete Employee -----");
         System.out.print("Enter employee ID: ");
         int userId = scanner.nextInt();
-        boolean success = repository.deleteEmployee(userId);
-        System.out.println(success ? "✅ Employee deleted successfully." : "❌ Failed to delete employee.");
+        try {
+            boolean success = repository.deleteEmployee(userId);
+            System.out.println(success ? "✅ Employee deleted successfully." : "❌ Failed to delete employee.");
+        } catch (EmployeeNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
     }
 
     private static void deleteProject() {
         System.out.println("----- Delete Project -----");
         System.out.print("Enter project ID: ");
         int projectId = scanner.nextInt();
-        boolean success = repository.deleteProject(projectId);
-        System.out.println(success ? "✅ Project deleted successfully." : "❌ Failed to delete project.");
+        try {
+            boolean success = repository.deleteProject(projectId);
+            System.out.println(success ? "✅ Project deleted successfully." : "❌ Failed to delete project.");
+        } catch (ProjectNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
     }
 
     private static void listAllTasks() {
