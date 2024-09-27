@@ -75,3 +75,17 @@ cd ProjectManagement
    </dependency>
    ```
    - Otherwise just add .jar file as External Library to the project.
+  
+### Configure Database Connection
+1. **Create a Properties File**: Create a file named `db.properties` in the `src/` directory with the following content:
+
+    ```properties
+    db.host=localhost
+    db.port=3306
+    db.name=db
+    db.username=root
+    db.password=root
+    ```
+
+2. **Adjust the values** according to your MySQL setup.
+
