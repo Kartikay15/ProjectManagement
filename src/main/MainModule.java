@@ -73,8 +73,7 @@ public class MainModule {
         double salary = scanner.nextDouble();
         System.out.print("Enter project ID: ");
         int projectId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
+        scanner.nextLine();
         Employee employee = new Employee(0, name, designation, gender, salary, projectId);
         boolean success = repository.createEmployee(employee);
         System.out.println(success ? "Employee added successfully." : "Failed to add employee.");
