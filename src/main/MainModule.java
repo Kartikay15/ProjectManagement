@@ -16,6 +16,9 @@ public class MainModule {
 
     public static void main(String[] args) {
         while (true) {
+            System.out.println("\n==============================");
+            System.out.println("     Project Management Menu   ");
+            System.out.println("==============================");
             System.out.println("1. Add Employee");
             System.out.println("2. Add Project");
             System.out.println("3. Add Task");
@@ -25,9 +28,12 @@ public class MainModule {
             System.out.println("7. Delete Project");
             System.out.println("8. List All Tasks in a Project");
             System.out.println("0. Exit");
+            System.out.print("Please enter your choice: ");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
+
+            System.out.println(); // Add a newline for better readability
 
             switch (choice) {
                 case 1:
@@ -55,14 +61,16 @@ public class MainModule {
                     listAllTasks();
                     break;
                 case 0:
+                    System.out.println("Exiting the application. Goodbye!");
                     return;
                 default:
-                    System.out.println("Invalid choice!");
+                    System.out.println("Invalid choice! Please try again.");
             }
         }
     }
 
     private static void addEmployee() {
+        System.out.println("----- Add Employee -----");
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
         System.out.print("Enter designation: ");
@@ -74,12 +82,14 @@ public class MainModule {
         System.out.print("Enter project ID: ");
         int projectId = scanner.nextInt();
         scanner.nextLine();
+
         Employee employee = new Employee(0, name, designation, gender, salary, projectId);
         boolean success = repository.createEmployee(employee);
-        System.out.println(success ? "Employee added successfully." : "Failed to add employee.");
+        System.out.println(success ? "✅ Employee added successfully." : "❌ Failed to add employee.");
     }
 
     private static void addProject() {
+        System.out.println("----- Add Project -----");
         System.out.print("Enter project name: ");
         String projectName = scanner.nextLine();
         System.out.print("Enter description: ");
@@ -91,10 +101,11 @@ public class MainModule {
 
         Project project = new Project(0, projectName, description, startDate, status);
         boolean success = repository.createProject(project);
-        System.out.println(success ? "Project added successfully." : "Failed to add project.");
+        System.out.println(success ? "✅ Project added successfully." : "❌ Failed to add project.");
     }
 
     private static void addTask() {
+        System.out.println("----- Add Task -----");
         System.out.print("Enter task name: ");
         String taskName = scanner.nextLine();
         System.out.print("Enter project ID: ");
@@ -107,19 +118,21 @@ public class MainModule {
 
         Task task = new Task(0, taskName, projectId, employeeId, status);
         boolean success = repository.createTask(task);
-        System.out.println(success ? "Task added successfully." : "Failed to add task.");
+        System.out.println(success ? "✅ Task added successfully." : "❌ Failed to add task.");
     }
 
     private static void assignProjectToEmployee() {
+        System.out.println("----- Assign Project to Employee -----");
         System.out.print("Enter project ID: ");
         int projectId = scanner.nextInt();
         System.out.print("Enter employee ID: ");
         int employeeId = scanner.nextInt();
         boolean success = repository.assignProjectToEmployee(projectId, employeeId);
-        System.out.println(success ? "Project assigned successfully." : "Failed to assign project.");
+        System.out.println(success ? "✅ Project assigned successfully." : "❌ Failed to assign project.");
     }
 
     private static void assignTaskToEmployee() {
+        System.out.println("----- Assign Task to Employee -----");
         System.out.print("Enter task ID: ");
         int taskId = scanner.nextInt();
         System.out.print("Enter project ID: ");
@@ -127,31 +140,38 @@ public class MainModule {
         System.out.print("Enter employee ID: ");
         int employeeId = scanner.nextInt();
         boolean success = repository.assignTaskToEmployee(taskId, projectId, employeeId);
-        System.out.println(success ? "Task assigned successfully." : "Failed to assign task.");
+        System.out.println(success ? "✅ Task assigned successfully." : "❌ Failed to assign task.");
     }
 
     private static void deleteEmployee() {
+        System.out.println("----- Delete Employee -----");
         System.out.print("Enter employee ID: ");
         int userId = scanner.nextInt();
         boolean success = repository.deleteEmployee(userId);
-        System.out.println(success ? "Employee deleted successfully." : "Failed to delete employee.");
+        System.out.println(success ? "✅ Employee deleted successfully." : "❌ Failed to delete employee.");
     }
 
     private static void deleteProject() {
+        System.out.println("----- Delete Project -----");
         System.out.print("Enter project ID: ");
         int projectId = scanner.nextInt();
         boolean success = repository.deleteProject(projectId);
-        System.out.println(success ? "Project deleted successfully." : "Failed to delete project.");
+        System.out.println(success ? "✅ Project deleted successfully." : "❌ Failed to delete project.");
     }
 
     private static void listAllTasks() {
+        System.out.println("----- List All Tasks -----");
         System.out.print("Enter employee ID: ");
         int empId = scanner.nextInt();
         System.out.print("Enter project ID: ");
         int projectId = scanner.nextInt();
         List<Task> tasks = repository.getAllTasks(empId, projectId);
+        System.out.println("\nTasks in Project:");
         for (Task task : tasks) {
             System.out.println("Task ID: " + task.getTaskId() + ", Name: " + task.getTaskName() + ", Status: " + task.getStatus());
+        }
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks found for this project and employee.");
         }
     }
 }
