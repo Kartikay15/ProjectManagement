@@ -82,9 +82,9 @@ cd ProjectManagement
     ```properties
     db.host=localhost
     db.port=3306
-    db.name=db
-    db.username=root
-    db.password=root
+    db.name=your-database-name
+    db.username=your-username
+    db.password=your-password
     ```
 
 2. **Adjust the values** according to your MySQL setup.
