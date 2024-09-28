@@ -61,20 +61,34 @@ public class MainModule {
         }
     }
 
-    private static void displayMenu() {
-        System.out.println("\n=============================");
-        System.out.println("       Project Management     ");
-        System.out.println("=============================");
-        System.out.println("1. Add Employee");
-        System.out.println("2. Add Project");
-        System.out.println("3. Add Task");
-        System.out.println("4. Assign Project to Employee");
-        System.out.println("5. Assign Task to Employee");
-        System.out.println("6. Delete Employee");
-        System.out.println("7. Delete Project");
-        System.out.println("8. List All Tasks in a Project");
-        System.out.println("0. Exit");
-        System.out.print("Please select an option: ");
+    public static void displayMenu() {
+        // ASCII colors
+        final String RESET = "\u001B[0m";
+        final String BLUE = "\u001B[34m";
+        final String GREEN = "\u001B[32m";
+        final String CYAN = "\u001B[36m";
+        final String YELLOW = "\u001B[33m";
+        final String RED = "\u001B[31m";
+        final String WHITE = "\u001B[37m";
+
+        System.out.println(BLUE + "╔════════════════════════════════════════╗" + RESET);
+        System.out.println(BLUE + "║" + RESET + YELLOW + "        Project Management System       " + RESET + BLUE + "║" + RESET);
+        System.out.println(BLUE + "╠════════════════════════════════════════╣" + RESET);
+
+        System.out.println(BLUE + "║" + RESET + GREEN + " 1. " + RESET + WHITE + "Add Employee                        " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 2. " + RESET + WHITE + "Add Project                         " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 3. " + RESET + WHITE + "Add Task                            " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 4. " + RESET + WHITE + "Assign Project to Employee          " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 5. " + RESET + WHITE + "Assign Task to Employee             " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 6. " + RESET + WHITE + "Delete Employee                     " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 7. " + RESET + WHITE + "Delete Project                      " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 8. " + RESET + WHITE + "List All Tasks in a Project         " + BLUE + "║" + RESET);
+
+        System.out.println(BLUE + "╠════════════════════════════════════════╣" + RESET);
+        System.out.println(BLUE + "║" + RESET + RED + " 0. " + RESET + WHITE + "Exit                                " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "╚════════════════════════════════════════╝" + RESET);
+
+        System.out.print(CYAN + "Please select an option: " + RESET);
     }
 
     private static void addEmployee() {
