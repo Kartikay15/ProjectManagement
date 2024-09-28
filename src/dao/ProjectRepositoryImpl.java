@@ -8,6 +8,7 @@ import exception.ProjectNotFoundException;
 import util.DBConnUtil;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean createEmployee(Employee emp) throws ProjectNotFoundException {
-        if (checkProjectExists(emp.getProjectId())) { // Check if project exists
+        if (checkProjectExists(emp.getProjectId())) {
             throw new ProjectNotFoundException("Project with ID " + emp.getProjectId() + " not found.");
         }
         try (Connection conn = DBConnUtil.getConnection()) {
@@ -52,10 +53,10 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean createTask(Task task) throws EmployeeNotFoundException, ProjectNotFoundException {
-        if (checkEmployeeExists(task.getEmployeeId())) { // Check if employee exists
+        if (checkEmployeeExists(task.getEmployeeId())) {
             throw new EmployeeNotFoundException("Employee with ID " + task.getEmployeeId() + " not found.");
         }
-        if (checkProjectExists(task.getProjectId())) { // Check if project exists
+        if (checkProjectExists(task.getProjectId())) {
             throw new ProjectNotFoundException("Project with ID " + task.getProjectId() + " not found.");
         }
 
@@ -180,7 +181,76 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         return tasks;
     }
 
-    // Helper methods to check existence of employee and project
+    @Override
+    public List<Employee> getAllEmployees() {
+        List<Employee> employees = new ArrayList<>();
+        try (Connection conn = DBConnUtil.getConnection()) {
+            String query = "SELECT * FROM Employee";
+            assert conn != null;
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setName(rs.getString("name"));
+                employee.setDesignation(rs.getString("designation"));
+                employee.setGender(rs.getString("gender"));
+                employee.setSalary(rs.getInt("salary"));
+                employee.setProjectId(rs.getInt("project_id"));
+                employees.add(employee);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employees;
+    }
+
+    @Override
+    public List<Project> getAllProjects() {
+        List<Project> projects = new ArrayList<>();
+        try (Connection conn = DBConnUtil.getConnection()) {
+            String query = "SELECT * FROM Project";
+            assert conn != null;
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Project project = new Project();
+                project.setId(rs.getInt("id"));
+                project.setProjectName(rs.getString("projectName"));
+                project.setDescription(rs.getString("description"));
+                project.setStartDate(LocalDate.parse(rs.getString("startDate")));
+                project.setStatus(rs.getString("status"));
+                projects.add(project);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return projects;
+    }
+
+    @Override
+    public List<Task> getTaskTable() {
+        List<Task> tasks = new ArrayList<>();
+        try (Connection conn = DBConnUtil.getConnection()) {
+            String query = "SELECT * FROM Task";
+            assert conn != null;
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Task task = new Task();
+                task.setTaskId(rs.getInt("task_id"));
+                task.setTaskName(rs.getString("task_name"));
+                task.setProjectId(rs.getInt("project_id"));
+                task.setEmployeeId(rs.getInt("employee_id"));
+                task.setStatus(rs.getString("status"));
+                tasks.add(task);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tasks;
+    }
+
     private boolean checkEmployeeExists(int employeeId) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT COUNT(*) FROM Employee WHERE id = ?";

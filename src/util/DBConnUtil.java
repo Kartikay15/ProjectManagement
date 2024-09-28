@@ -11,6 +11,7 @@ public class DBConnUtil {
         try {
             // Explicitly register the MySQL driver
             Class.forName("com.mysql.cj.jdbc.Driver");
+            assert connectionString != null;
             return DriverManager.getConnection(connectionString);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

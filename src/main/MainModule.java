@@ -33,6 +33,7 @@ public class MainModule {
         actions.put(6, MainModule::deleteEmployee);
         actions.put(7, MainModule::deleteProject);
         actions.put(8, MainModule::listAllTasks);
+        actions.put(9, MainModule::showAllTables);
 
         while (true) {
             displayMenu();
@@ -76,6 +77,7 @@ public class MainModule {
         System.out.println(BLUE + "║" + RESET + GREEN + " 6. " + RESET + WHITE + "Delete Employee                     " + BLUE + "║" + RESET);
         System.out.println(BLUE + "║" + RESET + GREEN + " 7. " + RESET + WHITE + "Delete Project                      " + BLUE + "║" + RESET);
         System.out.println(BLUE + "║" + RESET + GREEN + " 8. " + RESET + WHITE + "List All Tasks in a Project         " + BLUE + "║" + RESET);
+        System.out.println(BLUE + "║" + RESET + GREEN + " 9. " + RESET + WHITE + "Show All Tables                     " + BLUE + "║" + RESET);
 
         System.out.println(BLUE + "╠════════════════════════════════════════╣" + RESET);
         System.out.println(BLUE + "║" + RESET + RED + " 0. " + RESET + WHITE + "Exit                                " + BLUE + "║" + RESET);
@@ -212,5 +214,133 @@ public class MainModule {
         if (tasks.isEmpty()) {
             System.out.println("No tasks found for this project and employee.");
         }
+    }
+
+    private static void showAllTables() {
+        listAllProjects();
+        listAllEmployees();
+        listTaskTable();
+    }
+    private static void listAllEmployees() {
+        List<Employee> employees = repository.getAllEmployees();
+
+        // Initialize maximum widths with the header lengths
+        int idWidth = 5; // Fixed width for ID
+        int nameWidth = "Name".length()+4;
+        int designationWidth = "Designation".length()+4;
+        int genderWidth = "Gender".length()+4;
+        int salaryWidth = "Salary".length()+4;
+
+        // Calculate maximum widths based on employee data
+        for (Employee employee : employees) {
+            nameWidth = Math.max(nameWidth, employee.getName().length());
+            designationWidth = Math.max(designationWidth, employee.getDesignation().length());
+            genderWidth = Math.max(genderWidth, employee.getGender().length());
+            salaryWidth = Math.max(salaryWidth, String.format("%.2f", employee.getSalary()).length());
+        }
+
+        // Print the header
+        System.out.println("\n==================================================================");
+        System.out.println("                              Employees                            ");
+        System.out.println("==================================================================");
+        System.out.printf("%-" + idWidth + "s %-" + nameWidth + "s %-" + designationWidth + "s %-" + genderWidth + "s %-" + salaryWidth + "s%n",
+                "ID", "Name", "Designation", "Gender", "Salary");
+        System.out.println("------------------------------------------------------------------");
+
+        // Employee entries
+        if (employees.isEmpty()) {
+            System.out.println("Employee Table is Empty");
+        } else {
+            for (Employee employee : employees) {
+                System.out.printf("%-" + idWidth + "d %-" + nameWidth + "s %-" + designationWidth + "s %-" + genderWidth + "s %-" + salaryWidth + ".2f%n",
+                        employee.getId(),
+                        employee.getName(),
+                        employee.getDesignation(),
+                        employee.getGender(),
+                        employee.getSalary());
+            }
+        }
+        System.out.println("=====================================================================");
+    }
+
+    private static void listAllProjects() {
+        List<Project> projects = repository.getAllProjects();
+
+        // Initialize maximum widths with the header lengths
+        int idWidth = 5; // Fixed width for ID
+        int projectNameWidth = "Project Name".length()+4;
+        int descriptionWidth = "Description".length()+4;
+        int statusWidth = "Status".length()+4;
+
+        // Calculate maximum widths based on project data
+        for (Project project : projects) {
+            projectNameWidth = Math.max(projectNameWidth, project.getProjectName().length());
+            descriptionWidth = Math.max(descriptionWidth, project.getDescription().length());
+            statusWidth = Math.max(statusWidth, project.getStatus().length());
+        }
+
+        // Print the header
+        System.out.println("\n===========================================================================================");
+        System.out.println("                                          Projects                                           ");
+        System.out.println("===========================================================================================");
+        System.out.printf("%-" + idWidth + "s %-" + projectNameWidth + "s %-" + descriptionWidth + "s %-" + statusWidth + "s%n",
+                "ID", "Project Name", "Description", "Status");
+        System.out.println("-------------------------------------------------------------------------------------------");
+
+        // Project entries
+        if (projects.isEmpty()) {
+            System.out.println("No projects found.");
+        } else {
+            for (Project project : projects) {
+                System.out.printf("%-" + idWidth + "d %-" + projectNameWidth + "s %-" + descriptionWidth + "s %-" + statusWidth + "s%n",
+                        project.getId(),
+                        project.getProjectName(),
+                        project.getDescription(),
+                        project.getStatus());
+            }
+        }
+        System.out.println("==============================================================================================");
+    }
+
+    private static void listTaskTable() {
+        List<Task> tasks = repository.getTaskTable();
+
+        // Initialize maximum widths with the header lengths
+        int idWidth = 5; // Fixed width for ID
+        int taskNameWidth = "Task Name".length()+4;
+        int projectIdWidth = "Project ID".length()+4;
+        int empIdWidth = "Emp ID".length()+4;
+        int statusWidth = "Status".length()+4;
+
+        // Calculate maximum widths based on task data
+        for (Task task : tasks) {
+            taskNameWidth = Math.max(taskNameWidth, task.getTaskName().length());
+            projectIdWidth = Math.max(projectIdWidth, String.valueOf(task.getProjectId()).length());
+            empIdWidth = Math.max(empIdWidth, String.valueOf(task.getEmployeeId()).length());
+            statusWidth = Math.max(statusWidth, task.getStatus().length());
+        }
+
+        // Print the header
+        System.out.println("\n====================================================================");
+        System.out.println("                               Tasks                            ");
+        System.out.println("====================================================================");
+        System.out.printf("%-" + idWidth + "s %-" + taskNameWidth + "s %-" + projectIdWidth + "s %-" + empIdWidth + "s %-" + statusWidth + "s%n",
+                "ID", "Task Name", "Project ID", "Emp ID", "Status");
+        System.out.println("---------------------------------------------------------------------");
+
+        // Task entries
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks found.");
+        } else {
+            for (Task task : tasks) {
+                System.out.printf("%-" + idWidth + "d %-" + taskNameWidth + "s %-" + projectIdWidth + "d %-" + empIdWidth + "d %-" + statusWidth + "s%n",
+                        task.getTaskId(),
+                        task.getTaskName(),
+                        task.getProjectId(),
+                        task.getEmployeeId(),
+                        task.getStatus());
+            }
+        }
+        System.out.println("=====================================================================");
     }
 }
