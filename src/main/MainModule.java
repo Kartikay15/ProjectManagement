@@ -7,6 +7,7 @@ import entity.Project;
 import entity.Task;
 import exception.EmployeeNotFoundException;
 import exception.ProjectNotFoundException;
+import gui.ProjectManagementGUI;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -19,8 +20,19 @@ public class MainModule {
     private static final IProjectRepository repository = new ProjectRepositoryImpl();
 
     public static void main(String[] args) {
-        Map<Integer, Runnable> actions = new HashMap<>();
+        System.out.println("Enter 0 for console mode and 1 for GUI Mode");
+        int choice = scanner.nextInt();
+        if (choice==1) {
+            // Launch GUI
+            javax.swing.SwingUtilities.invokeLater(ProjectManagementGUI::new);
+        } else {
+            // Launch Console
+            runConsole();
+        }
+    }
 
+    private static void runConsole() {
+        Map<Integer, Runnable> actions = new HashMap<>();
         actions.put(1, MainModule::addEmployee);
         actions.put(2, MainModule::addProject);
         actions.put(3, MainModule::addTask);
