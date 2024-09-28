@@ -1,4 +1,4 @@
-package gui;
+/*package gui;
 
 import dao.IProjectRepository;
 import dao.ProjectRepositoryImpl;
@@ -154,8 +154,14 @@ public class ProjectManagementGUI extends JFrame {
         String status = JOptionPane.showInputDialog("Enter status:");
 
         Task task = new Task(0, taskName, projectId, employeeId, status);
-        boolean success = repository.createTask(task);
-        JOptionPane.showMessageDialog(this, success ? "✅ Task added successfully." : "❌ Failed to add task.");
+        try {
+            boolean success = repository.createTask(task);
+            JOptionPane.showMessageDialog(this, success ? "✅ Task added successfully." : "❌ Failed to add task.");
+        } catch (EmployeeNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "❌ " + e.getMessage());
+        } catch (ProjectNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "❌ " + e.getMessage());
+        }
     }
 
     private void assignProject() {
@@ -250,3 +256,4 @@ class RoundedButton extends JButton {
         return new Dimension(150, 40); // Set a fixed size for buttons
     }
 }
+*/

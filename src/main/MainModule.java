@@ -7,7 +7,6 @@ import entity.Project;
 import entity.Task;
 import exception.EmployeeNotFoundException;
 import exception.ProjectNotFoundException;
-import gui.ProjectManagementGUI;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class MainModule {
         int choice = scanner.nextInt();
         if (choice==1) {
             // Launch GUI
-            javax.swing.SwingUtilities.invokeLater(ProjectManagementGUI::new);
+            //javax.swing.SwingUtilities.invokeLater(ProjectManagementGUI::new);
         } else {
             // Launch Console
             runConsole();
@@ -93,8 +92,12 @@ public class MainModule {
         scanner.nextLine();
 
         Employee employee = new Employee(0, name, designation, gender, salary, projectId);
-        boolean success = repository.createEmployee(employee);
-        System.out.println(success ? "✅ Employee added successfully." : "❌ Failed to add employee.");
+        try {
+            boolean success = repository.createEmployee(employee);
+            System.out.println(success ? "✅ Employee added successfully." : "❌ Failed to add employee.");
+        } catch (ProjectNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
     }
 
     private static void addProject() {
@@ -122,12 +125,16 @@ public class MainModule {
         System.out.print("Enter employee ID: ");
         int employeeId = scanner.nextInt();
         System.out.print("Enter status: ");
-        String status = scanner.next();
         scanner.nextLine(); // Consume newline
+        String status = scanner.nextLine();
 
         Task task = new Task(0, taskName, projectId, employeeId, status);
-        boolean success = repository.createTask(task);
-        System.out.println(success ? "✅ Task added successfully." : "❌ Failed to add task.");
+        try {
+            boolean success = repository.createTask(task);
+            System.out.println(success ? "✅ Task added successfully." : "❌ Failed to add task.");
+        } catch (EmployeeNotFoundException | ProjectNotFoundException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
     }
 
     private static void assignProjectToEmployee() {

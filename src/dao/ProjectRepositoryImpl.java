@@ -14,10 +14,12 @@ import java.util.List;
 public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
-    public boolean createEmployee(Employee emp) {
+    public boolean createEmployee(Employee emp) throws ProjectNotFoundException {
+        if (!checkProjectExists(emp.getProjectId())) { // Check if project exists
+            throw new ProjectNotFoundException("Project with ID " + emp.getProjectId() + " not found.");
+        }
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Employee (name, designation, gender, salary, project_id) VALUES (?, ?, ?, ?, ?)";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, emp.getName());
             pstmt.setString(2, emp.getDesignation());
@@ -30,7 +32,6 @@ public class ProjectRepositoryImpl implements IProjectRepository {
             return false;
         }
     }
-
     @Override
     public boolean createProject(Project pj) {
         try (Connection conn = DBConnUtil.getConnection()) {
@@ -49,10 +50,16 @@ public class ProjectRepositoryImpl implements IProjectRepository {
     }
 
     @Override
-    public boolean createTask(Task task) {
+    public boolean createTask(Task task) throws EmployeeNotFoundException, ProjectNotFoundException {
+        if (!checkEmployeeExists(task.getEmployeeId())) { // Check if employee exists
+            throw new EmployeeNotFoundException("Employee with ID " + task.getEmployeeId() + " not found.");
+        }
+        if (!checkProjectExists(task.getProjectId())) { // Check if project exists
+            throw new ProjectNotFoundException("Project with ID " + task.getProjectId() + " not found.");
+        }
+
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Task (task_name, project_id, employee_id, status) VALUES (?, ?, ?, ?)";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, task.getTaskName());
             pstmt.setInt(2, task.getProjectId());
