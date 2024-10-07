@@ -9,6 +9,7 @@ import exception.EmployeeNotFoundException;
 import exception.ProjectNotFoundException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,31 +261,34 @@ public class MainModule {
                         employee.getSalary());
             }
         }
-        System.out.println("=====================================================================");
+        System.out.println("===================================================================");
     }
 
     private static void listAllProjects() {
         List<Project> projects = repository.getAllProjects();
-
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // Initialize maximum widths with the header lengths
         int idWidth = 5; // Fixed width for ID
-        int projectNameWidth = "Project Name".length()+4;
-        int descriptionWidth = "Description".length()+4;
-        int statusWidth = "Status".length()+4;
+        int projectNameWidth = "Project Name".length() + 4;
+        int descriptionWidth = "Description".length() + 4;
+        int statusWidth = "Status".length() + 4;
+        int startDateWidth = "Start Date".length() + 4; // For the startDate column
 
         // Calculate maximum widths based on project data
         for (Project project : projects) {
             projectNameWidth = Math.max(projectNameWidth, project.getProjectName().length());
             descriptionWidth = Math.max(descriptionWidth, project.getDescription().length());
             statusWidth = Math.max(statusWidth, project.getStatus().length());
+            String startDateString = project.getStartDate().format(dateFormatter);
+            startDateWidth = Math.max(startDateWidth, startDateString.length());
         }
 
         // Print the header
         System.out.println("\n===========================================================================================");
         System.out.println("                                          Projects                                           ");
         System.out.println("===========================================================================================");
-        System.out.printf("%-" + idWidth + "s %-" + projectNameWidth + "s %-" + descriptionWidth + "s %-" + statusWidth + "s%n",
-                "ID", "Project Name", "Description", "Status");
+        System.out.printf("%-" + idWidth + "s %-" + projectNameWidth + "s %-" + descriptionWidth + "s %-" + statusWidth + "s %-" + startDateWidth + "s%n",
+                "ID", "Project Name", "Description", "Status", "Start Date"); // Include startDate in header
         System.out.println("-------------------------------------------------------------------------------------------");
 
         // Project entries
@@ -292,15 +296,17 @@ public class MainModule {
             System.out.println("No projects found.");
         } else {
             for (Project project : projects) {
-                System.out.printf("%-" + idWidth + "d %-" + projectNameWidth + "s %-" + descriptionWidth + "s %-" + statusWidth + "s%n",
+                System.out.printf("%-" + idWidth + "d %-" + projectNameWidth + "s %-" + descriptionWidth + "s %-" + statusWidth + "s %-" + startDateWidth + "s%n",
                         project.getId(),
                         project.getProjectName(),
                         project.getDescription(),
-                        project.getStatus());
+                        project.getStatus(),
+                        project.getStartDate()); // Display startDate for each project
             }
         }
-        System.out.println("==============================================================================================");
+        System.out.println("===========================================================================================");
     }
+
 
     private static void listTaskTable() {
         List<Task> tasks = repository.getTaskTable();
@@ -321,12 +327,12 @@ public class MainModule {
         }
 
         // Print the header
-        System.out.println("\n====================================================================");
-        System.out.println("                               Tasks                            ");
-        System.out.println("====================================================================");
+        System.out.println("\n======================================================================================");
+        System.out.println("                                  Tasks                            ");
+        System.out.println("======================================================================================");
         System.out.printf("%-" + idWidth + "s %-" + taskNameWidth + "s %-" + projectIdWidth + "s %-" + empIdWidth + "s %-" + statusWidth + "s%n",
                 "ID", "Task Name", "Project ID", "Emp ID", "Status");
-        System.out.println("---------------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------------------------------------");
 
         // Task entries
         if (tasks.isEmpty()) {
@@ -341,6 +347,6 @@ public class MainModule {
                         task.getStatus());
             }
         }
-        System.out.println("=====================================================================");
+        System.out.println("=======================================================================================");
     }
 }

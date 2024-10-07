@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="guicedee.services.byte.buddy" type="repository">
+    <properties maven-id="com.guicedee.services:byte-buddy:1.2.2.1-jre17" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/guicedee/services/byte-buddy/1.2.2.1-jre17/byte-buddy-1.2.2.1-jre17.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/guicedee/services/jna-platform/1.2.2.1-jre17/jna-platform-1.2.2.1-jre17.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.13.1/jackson-databind-2.13.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.13.1/jackson-annotations-2.13.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

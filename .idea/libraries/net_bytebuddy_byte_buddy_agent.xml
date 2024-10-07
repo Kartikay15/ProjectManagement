@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="net.bytebuddy.byte.buddy.agent" type="repository">
+    <properties maven-id="net.bytebuddy:byte-buddy-agent:1.15.3" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/bytebuddy/byte-buddy-agent/1.15.3/byte-buddy-agent-1.15.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
