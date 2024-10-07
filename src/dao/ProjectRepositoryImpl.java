@@ -16,12 +16,11 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean createEmployee(Employee emp) throws ProjectNotFoundException {
-        if (checkProjectExists(emp.getProjectId())) {
+        if (!checkProjectExists(emp.getProjectId())) { // Check if the project exists
             throw new ProjectNotFoundException("Project with ID " + emp.getProjectId() + " not found.");
         }
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Employee (name, designation, gender, salary, project_id) VALUES (?, ?, ?, ?, ?)";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, emp.getName());
             pstmt.setString(2, emp.getDesignation());
@@ -34,11 +33,11 @@ public class ProjectRepositoryImpl implements IProjectRepository {
             return false;
         }
     }
+
     @Override
     public boolean createProject(Project pj) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Project (projectName, description, startDate, status) VALUES (?, ?, ?, ?)";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, pj.getProjectName());
             pstmt.setString(2, pj.getDescription());
@@ -53,16 +52,15 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean createTask(Task task) throws EmployeeNotFoundException, ProjectNotFoundException {
-        if (checkEmployeeExists(task.getEmployeeId())) {
+        if (!checkEmployeeExists(task.getEmployeeId())) { // Check if the employee exists
             throw new EmployeeNotFoundException("Employee with ID " + task.getEmployeeId() + " not found.");
         }
-        if (checkProjectExists(task.getProjectId())) {
+        if (!checkProjectExists(task.getProjectId())) { // Check if the project exists
             throw new ProjectNotFoundException("Project with ID " + task.getProjectId() + " not found.");
         }
 
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "INSERT INTO Task (task_name, project_id, employee_id, status) VALUES (?, ?, ?, ?)";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, task.getTaskName());
             pstmt.setInt(2, task.getProjectId());
@@ -77,16 +75,15 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean assignProjectToEmployee(int projectId, int employeeId) throws EmployeeNotFoundException, ProjectNotFoundException {
-        if (checkProjectExists(projectId)) {
+        if (!checkProjectExists(projectId)) { // Check if project exists
             throw new ProjectNotFoundException("Project with ID " + projectId + " not found.");
         }
-        if (checkEmployeeExists(employeeId)) {
+        if (!checkEmployeeExists(employeeId)) { // Check if employee exists
             throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
         }
 
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "UPDATE Employee SET project_id = ? WHERE id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, projectId);
             pstmt.setInt(2, employeeId);
@@ -99,16 +96,15 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean assignTaskToEmployee(int taskId, int projectId, int employeeId) throws EmployeeNotFoundException, ProjectNotFoundException {
-        if (checkProjectExists(projectId)) {
+        if (!checkProjectExists(projectId)) { // Check if project exists
             throw new ProjectNotFoundException("Project with ID " + projectId + " not found.");
         }
-        if (checkEmployeeExists(employeeId)) {
+        if (!checkEmployeeExists(employeeId)) { // Check if employee exists
             throw new EmployeeNotFoundException("Employee with ID " + employeeId + " not found.");
         }
 
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "UPDATE Task SET employee_id = ? WHERE task_id = ? AND project_id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, employeeId);
             pstmt.setInt(2, taskId);
@@ -122,13 +118,12 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean deleteEmployee(int userId) throws EmployeeNotFoundException {
-        if (checkEmployeeExists(userId)) {
+        if (!checkEmployeeExists(userId)) { // Check if employee exists
             throw new EmployeeNotFoundException("Employee with ID " + userId + " not found.");
         }
 
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "DELETE FROM Employee WHERE id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, userId);
             return pstmt.executeUpdate() > 0;
@@ -140,13 +135,12 @@ public class ProjectRepositoryImpl implements IProjectRepository {
 
     @Override
     public boolean deleteProject(int projectId) throws ProjectNotFoundException {
-        if (checkProjectExists(projectId)) {
+        if (!checkProjectExists(projectId)) { // Check if project exists
             throw new ProjectNotFoundException("Project with ID " + projectId + " not found.");
         }
 
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "DELETE FROM Project WHERE id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, projectId);
             return pstmt.executeUpdate() > 0;
@@ -161,7 +155,6 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         List<Task> tasks = new ArrayList<>();
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT * FROM Task WHERE employee_id = ? AND project_id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, empId);
             pstmt.setInt(2, projectId);
@@ -186,7 +179,6 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         List<Employee> employees = new ArrayList<>();
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT * FROM Employee";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -195,7 +187,7 @@ public class ProjectRepositoryImpl implements IProjectRepository {
                 employee.setName(rs.getString("name"));
                 employee.setDesignation(rs.getString("designation"));
                 employee.setGender(rs.getString("gender"));
-                employee.setSalary(rs.getInt("salary"));
+                employee.setSalary(rs.getDouble("salary"));
                 employee.setProjectId(rs.getInt("project_id"));
                 employees.add(employee);
             }
@@ -210,7 +202,6 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         List<Project> projects = new ArrayList<>();
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT * FROM Project";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -233,7 +224,6 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         List<Task> tasks = new ArrayList<>();
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT * FROM Task";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -251,35 +241,33 @@ public class ProjectRepositoryImpl implements IProjectRepository {
         return tasks;
     }
 
-    private boolean checkEmployeeExists(int employeeId) {
+    public boolean checkEmployeeExists(int employeeId) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT COUNT(*) FROM Employee WHERE id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, employeeId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) <= 0;
+                return rs.getInt(1) > 0; // return true if employee exists
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
+        return false; // return false if employee does not exist
     }
 
-    private boolean checkProjectExists(int projectId) {
+    public boolean checkProjectExists(int projectId) {
         try (Connection conn = DBConnUtil.getConnection()) {
             String query = "SELECT COUNT(*) FROM Project WHERE id = ?";
-            assert conn != null;
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, projectId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) <= 0;
+                return rs.getInt(1) > 0; // return true if project exists
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
+        return false; // return false if project does not exist
     }
 }
